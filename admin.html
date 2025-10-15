@@ -26,6 +26,7 @@
             --danger-red: #dc3545;
             --warning-yellow: #ffc107;
             --info-blue: #17a2b8;
+            --white: #ffffff;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -63,7 +64,6 @@
         .table thead { background-color: var(--primary-blue); color: var(--white); }
         .table tbody tr:hover { background-color: #e2e6ea; }
         
-        /* Perubahan pada badge untuk kategori dan status */
         .badge-custom { 
             padding: 8px 12px; 
             border-radius: 12px; 
@@ -72,15 +72,14 @@
             line-height: 1.2;
             display: inline-block;
         }
-        /* Kategori Badges */
         .badge-umum { background-color: var(--success-green); color: var(--white); }
         .badge-disabilitas-sktm { background-color: var(--primary-blue); color: var(--white); }
         .badge-disabilitas-non-sktm { background-color: var(--info-blue); color: var(--white); }
+        .badge-selesai { background-color: #2f855a; color: var(--white); }
 
-        /* Status Badges - Warna berbeda */
         .badge-Belum-Diperiksa { background-color: var(--warning-yellow); color: var(--text-dark); }
-        .badge-Sedang-Diperiksa { background-color: #4a5568; color: var(--white); } /* Warna abu-abu gelap */
-        .badge-Selesai { background-color: #2f855a; color: var(--white); } /* Hijau yang lebih tua */
+        .badge-Sedang-Diperiksa { background-color: #4a5568; color: var(--white); }
+        .badge-Selesai { background-color: #2f855a; color: var(--white); }
 
         .btn-sm-modern { border-radius: 8px; font-weight: 600; padding: 8px 16px; transition: all 0.3s ease; }
         .btn-info-modern { background-color: var(--info-blue); border: none; color: var(--white); }
@@ -139,6 +138,9 @@
             margin-left: 1rem;
         }
         .badge-break { white-space: pre-wrap; }
+        
+        .hidden { display: none !important; } /* Menambahkan class hidden */
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); } /* Menambahkan class btn-close-white */
     </style>
 </head>
 <body>
@@ -251,10 +253,10 @@
                         <div class="col-12">
                             <h6 class="mb-3">Dokumen</h6>
                             <dl class="row mb-0">
-                                <dt class="col-sm-5 detail-label hidden" id="detail-sktm-row">Dokumen SKTM</dt>
-                                <dd class="col-sm-7 detail-value hidden" id="detail-sktm-link-container"><a id="detail-sktm-link" href="#" target="_blank">Lihat Dokumen</a></dd>
+                                <dt class="col-sm-5 detail-label" id="detail-sktm-row">Dokumen SKTM</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-sktm-display"></dd>
                                 <dt class="col-sm-5 detail-label">Bukti Pembayaran</dt>
-                                <dd class="col-sm-7 detail-value"><a id="detail-payment-link" href="#" target="_blank">Lihat Dokumen</a></dd>
+                                <dd class="col-sm-7 detail-value" id="detail-payment-proof-display"></dd>
                             </dl>
                         </div>
                     </div>
@@ -304,7 +306,6 @@
                     'umum': 'badge-umum'
                 }[reg.category] || 'badge-selesai';
                 
-                // Menambahkan <br> untuk kata kedua
                 const categoryText = {
                     'disabilitas-sktm': 'Disabilitas<br>(SKTM)',
                     'disabilitas-non-sktm': 'Disabilitas<br>(Non-SKTM)',
@@ -315,7 +316,6 @@
                 
                 const statusClass = reg.status ? `badge-${reg.status.replace(/\s/g, '-')}` : 'badge-selesai';
                 
-                // Menambahkan <br> untuk status
                 let statusText = reg.status ? reg.status.toUpperCase() : 'N/A';
                 if (statusText === 'BELUM DIPERIKSA') {
                     statusText = 'BELUM<br>DIPERIKSA';
@@ -366,7 +366,10 @@
         };
 
         registrationsRef.on('value', (snapshot) => {
-            document.getElementById('loading-row').style.display = 'none';
+            const loadingRow = document.getElementById('loading-row');
+            if (loadingRow) {
+                loadingRow.style.display = 'none';
+            }
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 allRegistrations = Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse();
@@ -399,13 +402,20 @@
         };
 
         tableBody.addEventListener('click', (e) => {
-            if (e.target.closest('.btn-details')) {
-                const regId = e.target.closest('.btn-details').dataset.id;
+            if (e.target.closest('.detail-btn')) {
+                const regId = e.target.closest('.detail-btn').dataset.id;
                 const regData = allRegistrations.find(reg => reg.id === regId);
                 if (regData) {
+                    // Update personal info
                     document.getElementById('detail-name').textContent = regData.fullName || 'N/A';
                     document.getElementById('detail-dob').textContent = formatDate(regData.dob, { day: 'numeric', month: 'long', year: 'numeric' });
+                    document.getElementById('detail-gender').textContent = regData.gender || 'N/A';
                     document.getElementById('detail-phone').textContent = regData.phone || 'N/A';
+                    document.getElementById('detail-address').textContent = regData.address || 'N/A';
+                    document.getElementById('detail-guardian-name').textContent = regData.guardianName || 'N/A';
+
+                    // Update registration info
+                    document.getElementById('detail-queue-number').textContent = regData.queueNumber || 'N/A';
                     document.getElementById('detail-schedule').textContent = `${formatDate(regData.date, {weekday:'long',day:'numeric',month:'long',year:'numeric'})}, ${regData.time || ''}`;
                     document.getElementById('detail-disability-type').textContent = regData.disabilityType || 'Tidak ada';
                     document.getElementById('detail-complaint').textContent = regData.complaint || 'Tidak ada';
@@ -415,10 +425,22 @@
                         'umum': 'Masyarakat Umum'
                     }[regData.category] || 'N/A';
                     document.getElementById('detail-status').textContent = regData.status ? regData.status.toUpperCase() : 'N/A';
-                    
+
+                    // Show/hide SKTM section
+                    const sktmRow = document.getElementById('detail-sktm-row');
+                    const sktmDisplay = document.getElementById('detail-sktm-display');
+                    if (regData.category === 'disabilitas-sktm') {
+                        sktmRow.classList.remove('hidden');
+                        sktmDisplay.classList.remove('hidden');
+                        renderFileDisplay(regData.sktmFileUrl, sktmDisplay);
+                    } else {
+                        sktmRow.classList.add('hidden');
+                        sktmDisplay.classList.add('hidden');
+                    }
+
+                    // Render payment proof file
                     renderFileDisplay(regData.paymentProofFileUrl, document.getElementById('detail-payment-proof-display'));
-                    renderFileDisplay(regData.sktmFileUrl, document.getElementById('detail-sktm-display'));
-                    
+
                     detailModal.show();
                 }
             }
