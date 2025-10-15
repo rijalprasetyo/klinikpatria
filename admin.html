@@ -17,14 +17,15 @@
             --primary-purple: #667eea;
             --primary-purple-dark: #764ba2;
             --light-bg: #f7fafc;
-            --border-color: #e2e8f0;
-            --text-dark: #2d3748;
-            --text-muted: #718096;
+            --border-color: #dee2e6;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
             --primary-blue: #007BFF;
             --primary-blue-dark: #0056b3;
             --success-green: #28a745;
             --danger-red: #dc3545;
             --warning-yellow: #ffc107;
+            --info-blue: #17a2b8;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -56,34 +57,60 @@
             display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; align-items: center;
         }
         .form-control, .form-select { border-radius: 10px; }
-        .table { border-collapse: separate; border-spacing: 0 8px; }
-        .table th {
-            font-weight: 600; color: var(--text-muted); text-transform: uppercase; 
-            font-size: 0.8rem; padding: 12px 16px; text-align: left;
-            border-bottom: 2px solid var(--border-color);
+        .table-responsive { border-radius: 16px; overflow: hidden; border: 1px solid var(--border-color); }
+        .table { margin-bottom: 0; }
+        .table th, .table td { vertical-align: middle; padding: 1rem; }
+        .table thead { background-color: var(--primary-blue); color: var(--white); }
+        .table tbody tr:hover { background-color: #e2e6ea; }
+        
+        /* Perubahan pada badge untuk kategori dan status */
+        .badge-custom { 
+            padding: 8px 12px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 0.8em; 
+            line-height: 1.2;
+            display: inline-block;
         }
-        .table td { background: var(--light-bg); padding: 16px; vertical-align: middle; }
-        .table tr:hover td { background-color: #edf2f7; }
-        .table td:first-child { border-radius: 12px 0 0 12px; }
-        .table td:last-child { border-radius: 0 12px 12px 0; text-align: center; }
-        .badge-custom { padding: 6px 12px; border-radius: 50px; font-weight: 600; font-size: 0.8rem; }
-        
-        .badge-umum { background-color: rgba(72, 187, 120, 0.2); color: #2f855a; }
-        .badge-disabilitas-sktm { background-color: rgba(102, 126, 234, 0.2); color: #4c51bf; }
-        .badge-disabilitas-non-sktm { background-color: rgba(56, 178, 172, 0.2); color: #234e52; }
-        
-        /* Updated Status Badges */
-        .badge-Belum-Diperiksa { background-color: var(--warning-yellow); color: var(--text-dark); }
-        .badge-Sedang-Diperiksa { background-color: var(--primary-blue); color: var(--white); }
-        .badge-Selesai { background-color: var(--success-green); color: var(--white); }
+        /* Kategori Badges */
+        .badge-umum { background-color: var(--success-green); color: var(--white); }
+        .badge-disabilitas-sktm { background-color: var(--primary-blue); color: var(--white); }
+        .badge-disabilitas-non-sktm { background-color: var(--info-blue); color: var(--white); }
 
+        /* Status Badges - Warna berbeda */
+        .badge-Belum-Diperiksa { background-color: var(--warning-yellow); color: var(--text-dark); }
+        .badge-Sedang-Diperiksa { background-color: #4a5568; color: var(--white); } /* Warna abu-abu gelap */
+        .badge-Selesai { background-color: #2f855a; color: var(--white); } /* Hijau yang lebih tua */
+
+        .btn-sm-modern { border-radius: 8px; font-weight: 600; padding: 8px 16px; transition: all 0.3s ease; }
+        .btn-info-modern { background-color: var(--info-blue); border: none; color: var(--white); }
+        .btn-info-modern:hover { background-color: #117a8b; }
         .btn-details {
-            background: none; border: 2px solid #cbd5e0; color: #4a5568;
-            border-radius: 8px; padding: 6px 12px; font-weight: 600;
-            cursor: pointer; transition: all 0.2s ease;
+            background-color: var(--info-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
-        .btn-details:hover { background: var(--primary-purple); color: white; border-color: var(--primary-purple); }
-        .modal-header { background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark)); color: white; }
+        .btn-details:hover { 
+            background-color: #117a8b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .modal-header { 
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark)); 
+            color: white; 
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+        }
+        .modal-header img {
+            height: 32px; 
+            margin-right: 12px;
+        }
         .uploaded-file-display img {
             max-width: 100%;
             height: auto;
@@ -92,6 +119,26 @@
             border: 1px solid var(--border-color);
             cursor: pointer;
         }
+        .list-group-flush .list-group-item {
+            padding-left: 0;
+            padding-right: 0;
+            border-color: #f0f2f5;
+        }
+        .list-group-flush .list-group-item strong.text-end {
+            flex-shrink: 0;
+            margin-left: 1rem;
+            text-align: right;
+            word-break: break-word;
+        }
+        .list-group-flush .list-group-item span {
+            flex-shrink: 1;
+        }
+        .modal-title-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-left: 1rem;
+        }
+        .badge-break { white-space: pre-wrap; }
     </style>
 </head>
 <body>
@@ -134,10 +181,10 @@
                             <th>Nama Pasien</th>
                             <th>Jadwal</th>
                             <th>Keluhan</th>
-                            <th>Disabilitas</th>
+                            <th>Jenis Disabilitas / Layanan</th>
                             <th>Kategori</th>
                             <th>Status</th>
-                            <th>Aksi</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="registration-table-body">
@@ -156,19 +203,61 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Detail Pendaftaran Pasien</h5>
+                    <h5 class="modal-title d-flex align-items-center">
+                        <img src="https://agent48.site/assets/mac/logoklinik.png" alt="Logo Klinik" class="me-2">
+                        Detail Pendaftaran Pasien
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between"><span>Nama Pasien:</span> <strong id="detail-name"></strong></li>
-                        <li class="list-group-item d-flex justify-content-between"><span>Tgl Lahir:</span> <strong id="detail-dob"></strong></li>
-                        <li class="list-group-item d-flex justify-content-between"><span>No. HP/WA:</span> <strong id="detail-phone"></strong></li>
-                        <li class="list-group-item d-flex justify-content-between"><span>Jadwal Kunjungan:</span> <strong id="detail-schedule" class="text-end"></strong></li>
-                        <li class="list-group-item d-flex flex-column"><span>Keluhan:</span> <strong id="detail-complaint" class="mt-1" style="text-align: right;"></strong></li>
-                        <li class="list-group-item"><span>Bukti Pembayaran:</span><div id="detail-payment-proof-display" class="mt-2 text-end uploaded-file-display"></div></li>
-                        <li class="list-group-item"><span>File SKTM/KKS:</span><div id="detail-sktm-display" class="mt-2 text-end uploaded-file-display"></div></li>
-                    </ul>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Informasi Personal</h6>
+                            <dl class="row mb-0">
+                                <dt class="col-sm-5 detail-label">Nama Pasien</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-name"></dd>
+                                <dt class="col-sm-5 detail-label">Tanggal Lahir</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-dob"></dd>
+                                <dt class="col-sm-5 detail-label">Jenis Kelamin</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-gender"></dd>
+                                <dt class="col-sm-5 detail-label">No. HP/WA</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-phone"></dd>
+                                <dt class="col-sm-5 detail-label">Alamat</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-address"></dd>
+                                <dt class="col-sm-5 detail-label">Nama Wali</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-guardian-name"></dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Informasi Pendaftaran</h6>
+                            <dl class="row mb-0">
+                                <dt class="col-sm-5 detail-label">Nomor Antrian</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-queue-number"></dd>
+                                <dt class="col-sm-5 detail-label">Jadwal Kunjungan</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-schedule"></dd>
+                                <dt class="col-sm-5 detail-label">Jenis Disabilitas / Layanan</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-disability-type"></dd>
+                                <dt class="col-sm-5 detail-label">Keluhan</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-complaint"></dd>
+                                <dt class="col-sm-5 detail-label">Kategori</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-category"></dd>
+                                <dt class="col-sm-5 detail-label">Status</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-status"></dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="mb-3">Dokumen</h6>
+                            <dl class="row mb-0">
+                                <dt class="col-sm-5 detail-label hidden" id="detail-sktm-row">Dokumen SKTM</dt>
+                                <dd class="col-sm-7 detail-value hidden" id="detail-sktm-link-container"><a id="detail-sktm-link" href="#" target="_blank">Lihat Dokumen</a></dd>
+                                <dt class="col-sm-5 detail-label">Bukti Pembayaran</dt>
+                                <dd class="col-sm-7 detail-value"><a id="detail-payment-link" href="#" target="_blank">Lihat Dokumen</a></dd>
+                            </dl>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -209,20 +298,32 @@
                 return; 
             }
             data.forEach((reg) => {
-                const categoryBadgeClass = {
+                const categoryClass = {
                     'disabilitas-sktm': 'badge-disabilitas-sktm',
                     'disabilitas-non-sktm': 'badge-disabilitas-non-sktm',
                     'umum': 'badge-umum'
                 }[reg.category] || 'badge-selesai';
-                const categoryText = {
-                    'disabilitas-sktm': 'Disabilitas (SKTM)',
-                    'disabilitas-non-sktm': 'Disabilitas (Non-SKTM)',
-                    'umum': 'Masyarakat Umum'
-                }[reg.category] || reg.category || 'N/A';
-                const categoryBadge = `<span class="badge-custom ${categoryBadgeClass}">${categoryText}</span>`;
                 
-                const statusBadgeClass = reg.status ? `badge-${reg.status.replace(/\s/g, '-')}` : 'badge-selesai';
-                const statusBadge = `<span class="badge-custom ${statusBadgeClass}">${reg.status ? reg.status.toUpperCase() : 'N/A'}</span>`;
+                // Menambahkan <br> untuk kata kedua
+                const categoryText = {
+                    'disabilitas-sktm': 'Disabilitas<br>(SKTM)',
+                    'disabilitas-non-sktm': 'Disabilitas<br>(Non-SKTM)',
+                    'umum': 'Masyarakat<br>Umum'
+                }[reg.category] || reg.category || 'N/A';
+                
+                const categoryBadge = `<span class="badge-custom ${categoryClass} badge-break">${categoryText}</span>`;
+                
+                const statusClass = reg.status ? `badge-${reg.status.replace(/\s/g, '-')}` : 'badge-selesai';
+                
+                // Menambahkan <br> untuk status
+                let statusText = reg.status ? reg.status.toUpperCase() : 'N/A';
+                if (statusText === 'BELUM DIPERIKSA') {
+                    statusText = 'BELUM<br>DIPERIKSA';
+                } else if (statusText === 'SEDANG DIPERIKSA') {
+                    statusText = 'SEDANG<br>DIPERIKSA';
+                }
+                
+                const statusBadge = `<span class="badge-custom ${statusClass} badge-break">${statusText}</span>`;
 
                 const complaintPreview = reg.complaint && reg.complaint.length > 30 ? reg.complaint.substring(0, 30) + '...' : (reg.complaint || '-');
                 
@@ -235,7 +336,13 @@
                         <td>${reg.disabilityType || '-'}</td>
                         <td>${categoryBadge}</td>
                         <td>${statusBadge}</td>
-                        <td><button class="btn-details" data-id="${reg.id}">Detail</button></td>
+                        <td>
+                            <div class="d-flex flex-nowrap gap-2">
+                                <button class="btn btn-sm btn-info-modern detail-btn" data-id="${reg.id}">
+                                    <i class="fas fa-eye"></i> Detail
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                 `;
             });
@@ -258,17 +365,13 @@
             renderTable(filteredData);
         };
 
-        // Ini adalah bagian yang diperbaiki. 
-        // Fungsi on('value') akan dipanggil setiap kali ada perubahan pada database.
-        // Di dalamnya, kita akan mengambil data terbaru dan memanggil updateView()
-        // untuk menampilkan data yang sudah difilter.
         registrationsRef.on('value', (snapshot) => {
             document.getElementById('loading-row').style.display = 'none';
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 allRegistrations = Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse();
                 totalCountEl.textContent = allRegistrations.length;
-                updateView(); // Panggil updateView di dalam listener Firebase
+                updateView();
             } else {
                 totalCountEl.textContent = '0';
                 tableBody.innerHTML = `<tr><td colspan="8" class="text-center p-4">Belum ada data pendaftaran.</td></tr>`;
@@ -296,17 +399,26 @@
         };
 
         tableBody.addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-details')) {
-                const regId = e.target.dataset.id;
+            if (e.target.closest('.btn-details')) {
+                const regId = e.target.closest('.btn-details').dataset.id;
                 const regData = allRegistrations.find(reg => reg.id === regId);
                 if (regData) {
                     document.getElementById('detail-name').textContent = regData.fullName || 'N/A';
                     document.getElementById('detail-dob').textContent = formatDate(regData.dob, { day: 'numeric', month: 'long', year: 'numeric' });
                     document.getElementById('detail-phone').textContent = regData.phone || 'N/A';
                     document.getElementById('detail-schedule').textContent = `${formatDate(regData.date, {weekday:'long',day:'numeric',month:'long',year:'numeric'})}, ${regData.time || ''}`;
+                    document.getElementById('detail-disability-type').textContent = regData.disabilityType || 'Tidak ada';
                     document.getElementById('detail-complaint').textContent = regData.complaint || 'Tidak ada';
+                    document.getElementById('detail-category').textContent = {
+                        'disabilitas-sktm': 'Disabilitas (SKTM)',
+                        'disabilitas-non-sktm': 'Disabilitas (Non-SKTM)',
+                        'umum': 'Masyarakat Umum'
+                    }[regData.category] || 'N/A';
+                    document.getElementById('detail-status').textContent = regData.status ? regData.status.toUpperCase() : 'N/A';
+                    
                     renderFileDisplay(regData.paymentProofFileUrl, document.getElementById('detail-payment-proof-display'));
                     renderFileDisplay(regData.sktmFileUrl, document.getElementById('detail-sktm-display'));
+                    
                     detailModal.show();
                 }
             }
