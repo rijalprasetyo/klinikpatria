@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Dokter - Klinik Patria</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #007BFF;
+            --primary-blue-dark: #0056b3;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
+            --light-gray-bg: #f8f9fa;
+            --white: #ffffff;
+            --border-color: #dee2e6;
+            --dark-bg: #1a202c;
+            --success-green: #28a745;
+            --danger-red: #dc3545;
+            --warning-yellow: #ffc107;
+            --info-blue: #17a2b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--light-gray-bg); color: var(--text-dark); line-height: 1.7; }
+        
+        /* Perubahan pada Navbar */
+        .navbar { background-color: var(--white); padding: 1rem 0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .navbar-brand { font-family: 'Poppins', sans-serif; font-weight: 700; color: var(--primary-blue); }
+        .navbar-brand img { width: 100px; height: auto; margin-right: 0; }
+        .navbar-text-doctor { color: var(--text-dark); }
+        .navbar .btn-primary { 
+            border-radius: 50px; 
+            font-weight: 600; 
+            padding: 8px 20px; 
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .navbar .btn-primary:hover {
+            background-color: var(--primary-blue-dark);
+            border-color: var(--primary-blue-dark);
+        }
+
+        section { padding: 80px 0; }
+        .card-modern { background: var(--white); border-radius: 16px; padding: 40px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); border: 1px solid var(--border-color); }
+        h1, h2, h3, h4, h5 { font-family: 'Poppins', sans-serif; font-weight: 700; }
+        .table-responsive { border-radius: 16px; overflow: hidden; border: 1px solid var(--border-color); }
+        .table { margin-bottom: 0; }
+        .table th, .table td { vertical-align: middle; padding: 1rem; }
+        .table thead { background-color: var(--primary-blue); color: var(--white); }
+        .table tbody tr:hover { background-color: #e2e6ea; }
+        .btn-sm-modern { border-radius: 8px; font-weight: 600; padding: 8px 16px; transition: all 0.3s ease; }
+        .btn-info-modern { background-color: var(--info-blue); border: none; color: var(--white); }
+        .btn-info-modern:hover { background-color: #117a8b; }
+        .btn-primary-modern { background-color: var(--primary-blue); border: none; color: var(--white); }
+        .btn-primary-modern:hover { background-color: var(--primary-blue-dark); }
+        .btn-success-modern { background-color: var(--success-green); border: none; color: var(--white); }
+        .btn-success-modern:hover { background-color: #218838; }
+        .btn-warning-modern { background-color: var(--warning-yellow); border: none; color: var(--text-dark); }
+        .btn-warning-modern:hover { background-color: #d39e00; }
+        .badge { font-size: 0.8em; padding: 0.5em 0.8em; border-radius: 12px; font-weight: 600; }
+        .badge-Belum-Diperiksa { background-color: var(--warning-yellow); color: var(--text-dark); }
+        .badge-Sedang-Diperiksa { background-color: var(--primary-blue); color: var(--white); }
+        .badge-Selesai { background-color: var(--success-green); color: var(--white); }
+        .badge-Batal { background-color: var(--danger-red); color: var(--white); }
+        .hidden { display: none !important; }
+        .modal-content { border-radius: 16px; border: none; }
+        .modal-header { border-bottom: 1px solid var(--border-color); }
+        .modal-footer { border-top: 1px solid var(--border-color); }
+        .form-label { font-weight: 600; }
+        
+        .detail-section { padding: 1.5rem 0; }
+        .detail-section:not(:last-child) { border-bottom: 1px solid #e9ecef; }
+        .detail-label { font-weight: 600; color: var(--text-muted); }
+        .detail-value { font-weight: 500; word-wrap: break-word; }
+
+        .note-card { background: var(--light-gray-bg); border-radius: 8px; padding: 16px; margin-bottom: 15px; }
+        .note-card h6 { font-weight: 600; }
+        .note-card p { margin-bottom: 5px; }
+        .notes-actions { text-align: right; }
+        
+        /* CSS untuk logo di modal */
+        .modal-header .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+        }
+        .modal-header .navbar-brand img {
+            width: 32px;
+            height: 32px;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .card-modern { padding: 24px; }
+            .modal-body .row > div { margin-bottom: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="https://agent48.site/assets/mac/logoklinik.png" alt="Logo Klinik" class="me-2">
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="me-3 navbar-text-doctor d-none d-md-inline">Halo, Dokter <strong id="doctor-name-display">Dr. Budi Santoso</strong></span>
+                <a href="index.html" class="btn btn-primary">Logout</a>
+            </div>
+        </div>
+    </nav>
+    
+    <main id="doctor-dashboard" class="container" style="padding-top: 120px;">
+        <div class="row">
+            <div class="col-12">
+                <div class="card-modern">
+                    <h2 class="mb-4">Antrian Pasien</h2>
+                    
+                    <ul class="nav nav-tabs mb-3" id="patientTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="today-tab" data-bs-toggle="tab" data-bs-target="#today-patients" type="button" role="tab" aria-controls="today-patients" aria-selected="true">Hari Ini</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming-patients" type="button" role="tab" aria-controls="upcoming-patients" aria-selected="false">Hari Berikutnya</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history-patients" type="button" role="tab" aria-controls="history-patients" aria-selected="false">Hari Sebelumnya</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="today-patients" role="tabpanel" aria-labelledby="today-tab">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>No. Antrian</th>
+                                            <th>Nama Pasien</th>
+                                            <th>Jadwal</th>
+                                            <th>Keluhan</th>
+                                            <th>Jenis Disabilitas / Layanan</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="today-patient-list"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="upcoming-patients" role="tabpanel" aria-labelledby="upcoming-tab">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>No. Antrian</th>
+                                            <th>Nama Pasien</th>
+                                            <th>Jadwal</th>
+                                            <th>Keluhan</th>
+                                            <th>Jenis Disabilitas / Layanan</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="upcoming-patient-list"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="history-patients" role="tabpanel" aria-labelledby="history-tab">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>No. Antrian</th>
+                                            <th>Nama Pasien</th>
+                                            <th>Jadwal</th>
+                                            <th>Keluhan</th>
+                                            <th>Jenis Disabilitas / Layanan</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="history-patient-list"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal fade" id="detail-modal" tabindex="-1" aria-labelledby="detail-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detail-modal-label">Detail Pasien: <span id="detail-modal-patient-name"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Informasi Personal</h6>
+                            <dl class="row mb-0">
+                                <dt class="col-sm-5 detail-label">Nama Lengkap</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-full-name"></dd>
+                                <dt class="col-sm-5 detail-label">Tanggal Lahir</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-dob"></dd>
+                                <dt class="col-sm-5 detail-label">Jenis Kelamin</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-gender"></dd>
+                                <dt class="col-sm-5 detail-label">Nomor HP</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-phone"></dd>
+                                <dt class="col-sm-5 detail-label">Alamat</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-address"></dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Informasi Pendaftaran</h6>
+                            <dl class="row mb-0">
+                                <dt class="col-sm-5 detail-label">Nomor Antrian</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-queue-number"></dd>
+                                <dt class="col-sm-5 detail-label">Jadwal</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-schedule"></dd>
+                                <dt class="col-sm-5 detail-label">Jenis Disabilitas / Layanan</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-disability-type"></dd>
+                                <dt class="col-sm-5 detail-label">Keluhan Utama</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-complaint"></dd>
+                                <dt class="col-sm-5 detail-label">Kategori</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-category"></dd>
+                                <dt class="col-sm-5 detail-label">Status</dt>
+                                <dd class="col-sm-7 detail-value" id="detail-status"></dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="mb-3">Dokumen</h6>
+                            <dl class="row mb-0">
+                                <dt class="col-sm-5 detail-label hidden" id="detail-sktm-row">Dokumen SKTM</dt>
+                                <dd class="col-sm-7 detail-value hidden" id="detail-sktm-link-container"><a id="detail-sktm-link" href="#" target="_blank">Lihat Dokumen</a></dd>
+                                <dt class="col-sm-5 detail-label">Bukti Pembayaran</dt>
+                                <dd class="col-sm-7 detail-value"><a id="detail-payment-link" href="#" target="_blank">Lihat Dokumen</a></dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="notes-modal" tabindex="-1" aria-labelledby="notes-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="notes-modal-label">Catatan Medis: <span id="notes-modal-patient-name"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="notes-list"></div>
+                    <hr class="my-4">
+                    <h4>Tambah Catatan Baru</h4>
+                    <form id="add-note-form">
+                        <div class="mb-3">
+                            <label for="doctor-notes" class="form-label">Catatan Pemeriksaan</label>
+                            <textarea id="doctor-notes" class="form-control" rows="5" placeholder="Masukkan catatan medis dan diagnosis..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="medication" class="form-label">Daftar Obat</label>
+                            <textarea id="medication" class="form-control" rows="3" placeholder="Contoh: Paracetamol 500mg, 3x sehari..."></textarea>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" id="btn-save-note" class="btn btn-success">Simpan Catatan</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="status-modal" tabindex="-1" aria-labelledby="status-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="status-modal-label">Ubah Status Pasien</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="status-select" class="form-label">Pilih Status Baru</label>
+                        <select id="status-select" class="form-select">
+                            <option value="Belum Diperiksa">Belum Diperiksa</option>
+                            <option value="Sedang Diperiksa">Sedang Diperiksa</option>
+                            <option value="Selesai">Selesai</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" id="btn-save-status" class="btn-primary-modern">Simpan Status</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB-zS7qBYN9riG58CxcdoTew_DH_wHrFpA",
+            authDomain: "projek-link.firebaseapp.com",
+            databaseURL: "https://projek-link-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "projek-link",
+            storageBucket: "projek-link.appspot.com",
+            messagingSenderId: "1034379064850",
+            appId: "1:1034379064850:web:ddf6cab5c15eeca0a40acb",
+            measurementId: "G-8SFSX5F32J"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const patientRef = db.ref('pendaftaran');
+        
+        let selectedPatientId = null;
+        const loggedInDoctorName = "Dr. Budi Santoso";
+
+        const todayPatientListBody = document.getElementById('today-patient-list');
+        const upcomingPatientListBody = document.getElementById('upcoming-patient-list');
+        const historyPatientListBody = document.getElementById('history-patient-list');
+
+        const detailModal = new bootstrap.Modal(document.getElementById('detail-modal'));
+        const notesModal = new bootstrap.Modal(document.getElementById('notes-modal'));
+        const statusModal = new bootstrap.Modal(document.getElementById('status-modal'));
+
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('id-ID', {day: 'numeric', month: 'short'});
+        }
+
+        function createPatientRow(key, patient) {
+            const row = document.createElement('tr');
+            row.dataset.id = key;
+            const statusClass = patient.status.replace(/\s/g, '-');
+            
+            row.innerHTML = `
+                <td>${patient.queueNumber || 'N/A'}</td>
+                <td>${patient.fullName}</td>
+                <td>${formatDate(patient.date)}, ${patient.time}</td>
+                <td>${patient.complaint}</td>
+                <td>${patient.disabilityType || '-'}</td>
+                <td><span class="badge badge-${statusClass}">${patient.status.toUpperCase()}</span></td>
+                <td>
+                    <div class="d-flex flex-nowrap gap-2">
+                        <button class="btn btn-sm btn-info-modern detail-btn" data-id="${key}">
+                            <i class="fas fa-eye"></i> Detail
+                        </button>
+                        <button class="btn btn-sm btn-primary-modern notes-modal-btn" data-id="${key}">
+                            <i class="fas fa-notes-medical"></i> Catatan
+                        </button>
+                        <button class="btn btn-sm btn-warning-modern status-modal-btn" data-id="${key}">
+                            <i class="fas fa-exchange-alt"></i> Status
+                        </button>
+                    </div>
+                </td>
+            `;
+            return row;
+        }
+
+        function renderPatients(patients) {
+            const today = new Date().toISOString().split('T')[0];
+            const todayPatients = [];
+            const upcomingPatients = [];
+            const historyPatients = [];
+
+            Object.entries(patients).forEach(([key, patient]) => {
+                const patientDate = patient.date;
+                if (patientDate === today) {
+                    todayPatients.push([key, patient]);
+                } else if (patientDate > today) {
+                    upcomingPatients.push([key, patient]);
+                } else {
+                    historyPatients.push([key, patient]);
+                }
+            });
+
+            todayPatients.sort(([, a], [, b]) => (a.queueNumber || '').localeCompare(b.queueNumber || ''));
+            upcomingPatients.sort(([, a], [, b]) => new Date(a.date).getTime() - new Date(b.date).getTime() || a.time.localeCompare(b.time));
+            historyPatients.sort(([, a], [, b]) => new Date(b.date).getTime() - new Date(a.date).getTime() || b.time.localeCompare(a.time));
+
+            todayPatientListBody.innerHTML = todayPatients.length ? '' : '<tr><td colspan="7" class="text-center text-muted py-5">Tidak ada pasien dalam antrian hari ini.</td></tr>';
+            todayPatients.forEach(([key, patient]) => todayPatientListBody.appendChild(createPatientRow(key, patient)));
+            
+            upcomingPatientListBody.innerHTML = upcomingPatients.length ? '' : '<tr><td colspan="7" class="text-center text-muted py-5">Tidak ada pasien untuk hari berikutnya.</td></tr>';
+            upcomingPatients.forEach(([key, patient]) => upcomingPatientListBody.appendChild(createPatientRow(key, patient)));
+
+            historyPatientListBody.innerHTML = historyPatients.length ? '' : '<tr><td colspan="7" class="text-center text-muted py-5">Tidak ada riwayat pasien.</td></tr>';
+            historyPatients.forEach(([key, patient]) => historyPatientListBody.appendChild(createPatientRow(key, patient)));
+        }
+        
+        // Modal Event Listeners
+        document.addEventListener('click', async (e) => {
+            if (e.target.closest('.detail-btn')) {
+                const patientId = e.target.closest('button').dataset.id;
+                const patientData = (await patientRef.child(patientId).once('value')).val();
+                
+                document.getElementById('detail-modal-patient-name').textContent = patientData.fullName;
+                document.getElementById('detail-queue-number').textContent = patientData.queueNumber || 'N/A';
+                document.getElementById('detail-full-name').textContent = patientData.fullName;
+                document.getElementById('detail-dob').textContent = new Date(patientData.dob).toLocaleDateString('id-ID');
+                document.getElementById('detail-gender').textContent = patientData.gender;
+                document.getElementById('detail-phone').textContent = patientData.phone;
+                document.getElementById('detail-address').textContent = patientData.address;
+                document.getElementById('detail-disability-type').textContent = patientData.disabilityType || 'Tidak ada';
+                document.getElementById('detail-complaint').textContent = patientData.complaint;
+                const categoryMap = { 'disabilitas-sktm': 'Disabilitas (Dengan SKTM)', 'disabilitas-non-sktm': 'Disabilitas (Non-SKTM)', 'umum': 'Masyarakat Umum' };
+                document.getElementById('detail-category').textContent = categoryMap[patientData.category];
+                document.getElementById('detail-status').textContent = patientData.status.toUpperCase();
+                document.getElementById('detail-schedule').textContent = `${new Date(patientData.date).toLocaleDateString('id-ID', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'})}, ${patientData.time}`;
+                
+                const sktmRow = document.getElementById('detail-sktm-row');
+                const sktmLinkContainer = document.getElementById('detail-sktm-link-container');
+                if (patientData.sktmFileUrl) {
+                    sktmRow.classList.remove('hidden');
+                    sktmLinkContainer.classList.remove('hidden');
+                    document.getElementById('detail-sktm-link').href = patientData.sktmFileUrl;
+                } else {
+                    sktmRow.classList.add('hidden');
+                    sktmLinkContainer.classList.add('hidden');
+                }
+                document.getElementById('detail-payment-link').href = patientData.paymentProofFileUrl || '#';
+                
+                detailModal.show();
+            } else if (e.target.closest('.notes-modal-btn')) {
+                const patientId = e.target.closest('button').dataset.id;
+                selectedPatientId = patientId;
+                const patientData = (await patientRef.child(patientId).once('value')).val();
+
+                document.getElementById('notes-modal-patient-name').textContent = patientData.fullName;
+                const notesList = document.getElementById('notes-list');
+                notesList.innerHTML = '';
+                
+                const notes = patientData.notes || [];
+                if (notes.length === 0) {
+                    notesList.innerHTML = '<p class="text-muted text-center">Belum ada catatan medis.</p>';
+                } else {
+                    notes.forEach((note, index) => {
+                        const noteCard = document.createElement('div');
+                        noteCard.className = 'note-card';
+                        noteCard.innerHTML = `
+                            <h6>Catatan #${index + 1} - ${new Date(note.timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</h6>
+                            <p><strong>Catatan:</strong> ${note.doctorNotes}</p>
+                            <p><strong>Obat:</strong> ${note.medication || 'Tidak ada'}</p>
+                            <p class="small text-muted mb-0">Oleh: ${note.doctorName}</p>
+                            <div class="notes-actions mt-2">
+                                <button class="btn btn-sm btn-outline-secondary edit-note-btn" data-index="${index}"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-sm btn-outline-danger delete-note-btn" data-index="${index}"><i class="fas fa-trash-alt"></i> Hapus</button>
+                            </div>
+                        `;
+                        notesList.appendChild(noteCard);
+                    });
+                }
+                
+                document.getElementById('add-note-form').reset();
+                notesModal.show();
+            } else if (e.target.closest('.status-modal-btn')) {
+                const patientId = e.target.closest('button').dataset.id;
+                selectedPatientId = patientId;
+                const patientData = (await patientRef.child(patientId).once('value')).val();
+                document.getElementById('status-select').value = patientData.status;
+                statusModal.show();
+            }
+        });
+
+        document.getElementById('add-note-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const doctorNotes = document.getElementById('doctor-notes').value;
+            const medication = document.getElementById('medication').value;
+
+            if (!doctorNotes.trim()) {
+                alert('Catatan pemeriksaan tidak boleh kosong.');
+                return;
+            }
+
+            const newNote = {
+                doctorNotes,
+                medication,
+                doctorName: loggedInDoctorName,
+                timestamp: new Date().toISOString()
+            };
+
+            const patientData = (await patientRef.child(selectedPatientId).once('value')).val();
+            const currentNotes = patientData.notes || [];
+            currentNotes.push(newNote);
+            
+            try {
+                await patientRef.child(selectedPatientId).update({ notes: currentNotes });
+                alert('Catatan berhasil ditambahkan.');
+                notesModal.hide();
+            } catch (error) {
+                alert('Gagal menyimpan catatan: ' + error.message);
+            }
+        });
+
+        document.getElementById('notes-list').addEventListener('click', async (e) => {
+            if (e.target.closest('.edit-note-btn')) {
+                const index = e.target.closest('.edit-note-btn').dataset.index;
+                const patientData = (await patientRef.child(selectedPatientId).once('value')).val();
+                const noteToEdit = patientData.notes[index];
+                
+                document.getElementById('doctor-notes').value = noteToEdit.doctorNotes;
+                document.getElementById('medication').value = noteToEdit.medication;
+                document.getElementById('btn-save-note').textContent = "Update Catatan";
+                document.getElementById('add-note-form').onsubmit = async (e) => {
+                    e.preventDefault();
+                    const newNotes = document.getElementById('doctor-notes').value;
+                    const newMedication = document.getElementById('medication').value;
+                    if (!newNotes.trim()) {
+                        alert('Catatan pemeriksaan tidak boleh kosong.');
+                        return;
+                    }
+
+                    patientData.notes[index] = {
+                        ...patientData.notes[index],
+                        doctorNotes: newNotes,
+                        medication: newMedication,
+                        timestamp: new Date().toISOString()
+                    };
+                    try {
+                        await patientRef.child(selectedPatientId).update({ notes: patientData.notes });
+                        alert('Catatan berhasil diperbarui.');
+                        notesModal.hide();
+                    } catch (error) {
+                        alert('Gagal memperbarui catatan: ' + error.message);
+                    }
+                };
+            } else if (e.target.closest('.delete-note-btn')) {
+                const index = e.target.closest('.delete-note-btn').dataset.index;
+                if (confirm('Apakah Anda yakin ingin menghapus catatan ini?')) {
+                    const patientData = (await patientRef.child(selectedPatientId).once('value')).val();
+                    patientData.notes.splice(index, 1);
+                    try {
+                        await patientRef.child(selectedPatientId).update({ notes: patientData.notes });
+                        alert('Catatan berhasil dihapus.');
+                        notesModal.hide();
+                    } catch (error) {
+                        alert('Gagal menghapus catatan: ' + error.message);
+                    }
+                }
+            }
+        });
+
+        document.getElementById('btn-save-status').addEventListener('click', async () => {
+            if (!selectedPatientId) return;
+            const newStatus = document.getElementById('status-select').value;
+            try {
+                await patientRef.child(selectedPatientId).update({ status: newStatus });
+                alert('Status pasien berhasil diperbarui.');
+                statusModal.hide();
+            } catch (error) {
+                alert('Gagal menyimpan status: ' + error.message);
+            }
+        });
+
+        window.onload = () => {
+            patientRef.on('value', snapshot => {
+                const patients = snapshot.val() || {};
+                renderPatients(patients);
+            }, error => {
+                console.error("Firebase fetch error:", error);
+                alert("Gagal memuat data pasien.");
+            });
+        };
+    </script>
+</body>
+</html>
